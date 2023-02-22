@@ -43,7 +43,13 @@ function nonInteractive() {
     let i = 0;
     for (let num of numbers) {
         let coefs = ['a', 'b', 'c']
-        fileDataCheck(num)
+        if (isNaN(num)) {
+            console.log('Invalid data format');
+            process.exit(1);
+        } else if (!num) {
+            console.log(`Error. ${coefs[i]} cannot be 0`)
+            process.exit(1);
+        }
         i++;
     }
     const [a, b, c] = lines[0].split(' ').map(parseFloat);
@@ -53,16 +59,6 @@ function nonInteractive() {
         console.log(`file ${file} does not exist`) 
         rl.close();
     }
-}
-
-function fileDataCheck(num) {
-    if (isNaN(num)) {
-        console.log('Invalid data format');
-        process.exit(1);
-    } else if (!num) {
-        console.log(`Error. ${coefs[i]} cannot be 0`)
-        process.exit(1);
-    } else return
 }
 
 function askCoefficient(coefficient) {
