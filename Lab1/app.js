@@ -1,11 +1,12 @@
 'use strict'
 
 const readline = require('readline');
+const fs = require('fs');
+const path = require('path');
 const rl = readline.createInterface({
 input: process.stdin,
 output: process.stdout
 });
-interactive();
 
 async function interactive() {
     const a = await askCoefficient('a');
@@ -13,6 +14,44 @@ async function interactive() {
     const c = await askCoefficient('c');
     solveQuadraticEquation(a, b, c);
     rl.close();
+}
+
+function nonInteractive() {
+    const file = path.resolve(process.argv[2]);
+    try { 
+        const content = fs.readFileSync(file, 'utf8');
+        const lines = content.split('\n');
+        const numbers = lines[0].split(' ').map(parseFloat);
+        const strings = lines[0].split(' ')
+    if (lines.length !== 1 || numbers.length !== 3) {
+            console.log('Invalid file format');
+            process.exit(1);
+        }
+    for (let str of strings) {
+        if (/^0x[0-9a-f]+$/i.test(str)) {
+            console.log('Invalid data format');
+            process.exit(1);
+        }
+    }
+    let i = 0;
+    for (let num of numbers) {
+        let coefs = ['a', 'b', 'c']
+        if (isNaN(num)) {
+            console.log('Invalid data format');
+            process.exit(1);
+        } else if (!num) {
+            console.log(`Error. ${coefs[i]} cannot be 0`)
+            process.exit(1);
+        }
+        i++;
+    }
+    const [a, b, c] = lines[0].split(' ').map(parseFloat);
+    solveQuadraticEquation(a, b, c);
+    rl.close();
+    } catch (e) {
+        console.log(`file ${file} does not exist`) 
+        rl.close();
+    }
 }
 
 function askCoefficient(coefficient) {
