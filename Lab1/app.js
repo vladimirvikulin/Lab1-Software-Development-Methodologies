@@ -1,5 +1,35 @@
 'use strict'
 
+const readline = require('readline');
+const rl = readline.createInterface({
+input: process.stdin,
+output: process.stdout
+});
+interactive();
+
+async function interactive() {
+    const a = await askCoefficient('a');
+    const b = await askCoefficient('b');
+    const c = await askCoefficient('c');
+    solveQuadraticEquation(a, b, c);
+    rl.close();
+}
+
+function askCoefficient(coefficient) {
+    return new Promise((resolve, reject) => {
+        rl.question(`${coefficient}: `, (answer) => {
+            const number = Number(answer);
+            if (isNaN(number) || /^0x[0-9a-f]+$/i.test(answer) || number === 0) {
+                const error = `Error. Expected a valid real number, got ${answer} instead`
+                console.log(error);
+                resolve(askCoefficient(coefficient));
+            } else {
+                resolve(number);
+            }
+        });
+    });
+}
+
 function solveQuadraticEquation(a, b, c) {
     let rootsInfo;
     const equation = `Equation is: (${a}) x^2 + (${b}) x + (${c}) = 0` ;
