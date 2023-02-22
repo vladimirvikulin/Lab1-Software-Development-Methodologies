@@ -7,13 +7,16 @@ const rl = readline.createInterface({
 input: process.stdin,
 output: process.stdout
 });
-const INTERACTIVE_MODE = 2
-const NON_INTERACTIVE_MODE = 3
-if (process.argv.length === INTERACTIVE_MODE) {
-    interactive();
-} else if (process.argv.length === NON_INTERACTIVE_MODE) {
-    nonInteractive()
-}
+const INTERACTIVE_MODE = 2;
+const NON_INTERACTIVE_MODE = 3;
+
+(function chooseMode() {
+    if (process.argv.length === INTERACTIVE_MODE) {
+        interactive();
+    } else if (process.argv.length === NON_INTERACTIVE_MODE) {
+        nonInteractive();
+    }
+})()
 
 async function interactive() {
     const a = await askCoefficient('a');
@@ -42,12 +45,12 @@ function nonInteractive() {
     }
     let i = 0;
     for (let num of numbers) {
-        let coefs = ['a', 'b', 'c']
+        let coefs = ['a', 'b', 'c'];
         if (isNaN(num)) {
             console.log('Invalid data format');
             process.exit(1);
         } else if (!num) {
-            console.log(`Error. ${coefs[i]} cannot be 0`)
+            console.log(`Error. ${coefs[i]} cannot be 0`);
             process.exit(1);
         }
         i++;
@@ -56,7 +59,7 @@ function nonInteractive() {
     solveQuadraticEquation(a, b, c);
     rl.close();
     } catch (e) {
-        console.log(`file ${file} does not exist`) 
+        console.log(`file ${file} does not exist`);
         rl.close();
     }
 }
@@ -66,7 +69,7 @@ function askCoefficient(coefficient) {
         rl.question(`${coefficient}: `, (answer) => {
             const number = Number(answer);
             if (isNaN(number) || /^0x[0-9a-f]+$/i.test(answer) || number === 0) {
-                const error = `Error. Expected a valid real number, got ${answer} instead`
+                const error = `Error. Expected a valid real number, got ${answer} instead`;
                 console.log(error);
                 resolve(askCoefficient(coefficient));
             } else {
@@ -78,7 +81,7 @@ function askCoefficient(coefficient) {
 
 function solveQuadraticEquation(a, b, c) {
     let rootsInfo;
-    const equation = `Equation is: (${a}) x^2 + (${b}) x + (${c}) = 0` ;
+    const equation = `Equation is: (${a}) x^2 + (${b}) x + (${c}) = 0`;
     const discriminant = b * b - 4 * a * c;
     if (discriminant < 0) {
         rootsInfo = 'There are 0 roots';
@@ -95,5 +98,5 @@ function solveQuadraticEquation(a, b, c) {
 
   function printData(equation, rootsInfo) {
     console.log(equation);
-    console.log(rootsInfo)
+    console.log(rootsInfo);
   }
