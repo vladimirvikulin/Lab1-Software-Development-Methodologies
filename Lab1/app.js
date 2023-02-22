@@ -7,6 +7,13 @@ const rl = readline.createInterface({
 input: process.stdin,
 output: process.stdout
 });
+const INTERACTIVE_MODE = 2
+const NON_INTERACTIVE_MODE = 3
+if (process.argv.length === INTERACTIVE_MODE) {
+    interactive();
+} else if (process.argv.length === NON_INTERACTIVE_MODE) {
+    nonInteractive()
+}
 
 async function interactive() {
     const a = await askCoefficient('a');
