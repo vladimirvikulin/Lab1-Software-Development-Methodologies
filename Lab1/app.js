@@ -32,32 +32,29 @@ function nonInteractive() {
         const content = fs.readFileSync(file, 'utf8');
         const lines = content.split('\n');
         const numbers = lines[0].split(' ').map(parseFloat);
-        const strings = lines[0].split(' ')
-    if (lines.length !== 1 || numbers.length !== 3) {
+        const strings = lines[0].split(' ');
+        const [a, b, c] = lines[0].split(' ').map(parseFloat);
+        if (lines.length !== 1 || numbers.length !== 3) {
             console.log('Invalid file format');
             process.exit(1);
-        }
-    for (let str of strings) {
-        if (/^0x[0-9a-f]+$/i.test(str)) {
-            console.log('Invalid data format');
+        } else if (!a) {
+            console.log(`Error. a cannot be 0`);
             process.exit(1);
         }
-    }
-    let i = 0;
-    for (let num of numbers) {
-        let coefs = ['a', 'b', 'c'];
-        if (isNaN(num)) {
-            console.log('Invalid data format');
-            process.exit(1);
-        } else if (!num) {
-            console.log(`Error. ${coefs[i]} cannot be 0`);
-            process.exit(1);
+        for (let str of strings) {
+            if (/^0x[0-9a-f]+$/i.test(str)) {
+                console.log('Invalid data format');
+                process.exit(1);
+            }
         }
-        i++;
-    }
-    const [a, b, c] = lines[0].split(' ').map(parseFloat);
-    solveQuadraticEquation(a, b, c);
-    rl.close();
+        for (let num of numbers) {
+            if (isNaN(num)) {
+                console.log('Invalid data format');
+                process.exit(1);
+            } 
+        }
+        solveQuadraticEquation(a, b, c);
+        rl.close();
     } catch (e) {
         console.log(`file ${file} does not exist`);
         rl.close();
@@ -68,9 +65,12 @@ function askCoefficient(coefficient) {
     return new Promise((resolve, reject) => {
         rl.question(`${coefficient}: `, (answer) => {
             const number = Number(answer);
-            if (isNaN(number) || /^0x[0-9a-f]+$/i.test(answer) || number === 0) {
+            if (isNaN(number) || /^0x[0-9a-f]+$/i.test(answer)) {
                 const error = `Error. Expected a valid real number, got ${answer} instead`;
                 console.log(error);
+                resolve(askCoefficient(coefficient));
+            } else if (coefficient ==='a' && number === 0) { 
+                console.log(`Error. a cannot be 0`);
                 resolve(askCoefficient(coefficient));
             } else {
                 resolve(number);
