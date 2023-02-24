@@ -29,36 +29,40 @@ async function interactive() {
 function nonInteractive() {
     const file = path.resolve(process.argv[2]);
     try { 
-        const content = fs.readFileSync(file, 'utf8');
-        const lines = content.split('\n');
-        const numbers = lines[0].split(' ').map(parseFloat);
-        const strings = lines[0].split(' ');
-        const [a, b, c] = lines[0].split(' ').map(parseFloat);
-        if (lines.length !== 1 || numbers.length !== 3) {
-            console.log('Invalid file format');
-            process.exit(1);
-        } else if (!a) {
-            console.log(`Error. a cannot be 0`);
-            process.exit(1);
-        }
-        for (let str of strings) {
-            if (/^0x[0-9a-f]+$/i.test(str)) {
-                console.log('Invalid data format');
-                process.exit(1);
-            }
-        }
-        for (let num of numbers) {
-            if (isNaN(num)) {
-                console.log('Invalid data format');
-                process.exit(1);
-            } 
-        }
-        solveQuadraticEquation(a, b, c);
+        checkFileContent(file);
         rl.close();
     } catch (e) {
         console.log(`file ${file} does not exist`);
         rl.close();
     }
+}
+
+function checkFileFormat(file) {
+    const content = fs.readFileSync(file, 'utf8');
+    const lines = content.split('\n');
+    const numbers = lines[0].split(' ').map(parseFloat);
+    const strings = lines[0].split(' ');
+    const [a, b, c] = lines[0].split(' ').map(parseFloat);
+    if (lines.length !== 1 || numbers.length !== 3) {
+        console.log('Invalid file format');
+        return;
+    } else if (!a) {
+        console.log(`Error. a cannot be 0`);
+        return;
+    }
+    for (let str of strings) {
+        if (/^0x[0-9a-f]+$/i.test(str)) {
+            console.log('Invalid data format');
+            return;
+        }
+    }
+    for (let num of numbers) {
+        if (isNaN(num)) {
+            console.log('Invalid data format');
+            return;
+        } 
+    }
+    solveQuadraticEquation(a, b, c);
 }
 
 function askCoefficient(coefficient) {
