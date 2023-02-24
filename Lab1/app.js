@@ -29,7 +29,7 @@ async function interactive() {
 function nonInteractive() {
     const file = path.resolve(process.argv[2]);
     try { 
-        checkFileContent(file);
+        checkFileFormat(file);
         rl.close();
     } catch (e) {
         console.log(`file ${file} does not exist`);
