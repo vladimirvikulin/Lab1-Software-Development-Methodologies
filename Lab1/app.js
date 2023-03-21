@@ -15,6 +15,9 @@ const NON_INTERACTIVE_MODE = 3;
         interactive();
     } else if (process.argv.length === NON_INTERACTIVE_MODE) {
         nonInteractive();
+    } else {
+        console.log("Wrong number of parameters")
+        rl.close();
     }
 })()
 
